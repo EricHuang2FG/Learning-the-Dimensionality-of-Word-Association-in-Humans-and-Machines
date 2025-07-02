@@ -1,0 +1,5 @@
+.venv/
+run.sh
+.DS_Store
+__pycache__/
+data/SWOW/SWOW-EN.R100.csv
