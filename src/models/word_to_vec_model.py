@@ -1,4 +1,4 @@
-from utils.constants import DEFAULT_EMBEDDING_DIMENSION
+from src.utils.constants import DEFAULT_EMBEDDING_DIMENSION
 from gensim.models import Word2Vec, KeyedVectors
 
 

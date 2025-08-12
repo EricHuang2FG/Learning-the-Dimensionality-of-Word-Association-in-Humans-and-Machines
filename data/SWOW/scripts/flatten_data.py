@@ -1,4 +1,4 @@
-from utils.utils import clean_string
+from src.utils.utils import clean_string
 
 
 def flatten_data(src: str, dest: str) -> None:
