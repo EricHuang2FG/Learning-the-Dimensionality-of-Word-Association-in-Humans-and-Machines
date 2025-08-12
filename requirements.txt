@@ -1,0 +1,10 @@
+click==8.2.1
+gensim==4.3.3
+joblib==1.5.1
+nltk==3.9.1
+numpy==1.26.4
+regex==2024.11.6
+scipy==1.13.1
+smart_open==7.3.0
+tqdm==4.67.1
+wrapt==1.17.2
