@@ -2,21 +2,16 @@ from src.utils.constants import DEFAULT_EMBEDDING_DIMENSION
 from gensim.models import Word2Vec, KeyedVectors
 
 
-class WordToVec(
-    Word2Vec
-):  # a class to wrap around the KeyedVectors object to be compatible with the .wv attribute used in the rest of the implementation
-
-    def __init__(self, keyed_vectors: KeyedVectors) -> None:
-        self.wv: KeyedVectors = keyed_vectors
-
-
-def create_word_to_vec_model(model_directory: str) -> WordToVec:
-    return WordToVec(KeyedVectors.load(model_directory))
+def load_word_to_vec_model(model_directory: str) -> KeyedVectors:
+    return KeyedVectors.load(model_directory)
 
 
 def train_word_to_vec_model(
-    corpus: str, dest: str, dimension: int = DEFAULT_EMBEDDING_DIMENSION
-) -> None:
+    corpus: str,
+    dest: str,
+    dimension: int = DEFAULT_EMBEDDING_DIMENSION,
+    save: bool = True,
+) -> KeyedVectors | None:
     all_words = []
     with open(corpus, "r", encoding="utf-8") as r:
         for index, line in enumerate(r):
@@ -30,6 +25,8 @@ def train_word_to_vec_model(
         vector_size=dimension,
         sg=1,
     )
+    if not save:
+        return model.wv
     model.wv.save(dest)
 
 
@@ -37,5 +34,5 @@ if __name__ == "__main__":
     # train_word_to_vec_model(
     #     "data/SWOW/SWOW_flattened.R100.csv", "src/models/SWOE/SWOE.v1.model"
     # )
-    model = create_word_to_vec_model("src/models/SWOE/SWOE.v1.model")
-    print(model.wv.most_similar("hello"))
+    model = load_word_to_vec_model("src/models/SWOE/SWOE.v1.model")
+    print(model.most_similar("hello"))
