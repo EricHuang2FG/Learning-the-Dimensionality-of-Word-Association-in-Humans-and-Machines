@@ -1,54 +1,16 @@
-import numpy as np
 import matplotlib.pyplot as plt
-from src.utils.constants import DEFAULT_EMBEDDING_DIMENSION
-from src.utils.utils import parse_association_data
+from src.utils.constants import (
+    DEFAULT_EMBEDDING_DIMENSION,
+    ASSOCIATION_PROBABILITY_APPROX_TYPE_COSINE_SIMILARITY,
+    ASSOCIATION_PROBABILITY_APPROX_TYPE_SOFTMAX,
+)
+from src.utils.utils import (
+    parse_association_data,
+    get_cosine_similarity_association_probability,
+    get_softmax_association_probability,
+)
 from src.models.word_to_vec_model import train_word_to_vec_model
 from gensim.models import KeyedVectors
-
-ASSOCIATION_PROBABILITY_APPROX_TYPE_COSINE_SIMILARITY = "cos_sim"
-ASSOCIATION_PROBABILITY_APPROX_TYPE_SOFTMAX = "softmax"
-
-
-def get_cosine_similarity_association_probability(
-    w_1: str, w_2: str, word_to_vec_model: KeyedVectors
-) -> float:
-    cosine_similarity: float = 0.0
-    if w_1 in word_to_vec_model and w_2 in word_to_vec_model:
-        cosine_similarity = word_to_vec_model.similarity(w_1, w_2)
-
-    return cosine_similarity
-
-
-def get_softmax_association_probability(
-    cue: str,
-    response: str,
-    all_responses: dict[str, float],
-    word_to_vec_model: KeyedVectors,
-    denominator_cache: dict[str, float],
-) -> float:
-    # calculate P(response | cue)
-    if cue not in word_to_vec_model or response not in word_to_vec_model:
-        # numerator guaranteed to be zero
-        # hence just return
-        return 0.0
-
-    numerator: float = np.exp(
-        np.dot(word_to_vec_model[cue], word_to_vec_model[response])
-    )
-
-    if cue in denominator_cache:
-        return numerator / denominator_cache[cue]
-
-    denominator: float = 0.0
-    for curr_response in all_responses.keys():
-        if curr_response in word_to_vec_model:
-            denominator += np.exp(
-                np.dot(word_to_vec_model[curr_response], word_to_vec_model[cue])
-            )
-
-    denominator_cache[cue] = denominator
-
-    return numerator / denominator
 
 
 def get_reconstruction_error(
@@ -102,8 +64,8 @@ def plot_graph(
     association_strength_data_path: str = "data/SWOW/strength.SWOW-EN.R123.csv",
     corpus: str = "data/SWOW/SWOW_flattened.R100.csv",
 ) -> None:
-    FIGURE_SIZE = (12, 18)
-    LINE_WIDTH = 3
+    FIGURE_SIZE: tuple[int, int] = (12, 18)
+    LINE_WIDTH: int = 3
 
     x: list[int] = [10 * (2**i) for i in range(7)]
     # 10, 20, 40, 80, 160, 320, 640
